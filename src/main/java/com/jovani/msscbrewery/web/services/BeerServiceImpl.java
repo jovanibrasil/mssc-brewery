@@ -25,13 +25,19 @@ public class BeerServiceImpl implements BeerService {
         log.info("Saving beer.");
         return BeerDto.builder()
                 .id(UUID.randomUUID())
+                .beerName(beerDto.getBeerName())
+                .beerStyle(beerDto.getBeerStyle())
                 .build();
     }
 
     @Override
     public BeerDto updateBeer(BeerDto beerDto) {
         log.info("Updating beer.");
-        return null;
+        return BeerDto.builder()
+                .id(UUID.randomUUID())
+                .beerName(beerDto.getBeerName())
+                .beerStyle(beerDto.getBeerStyle())
+                .build();
     }
 
     @Override

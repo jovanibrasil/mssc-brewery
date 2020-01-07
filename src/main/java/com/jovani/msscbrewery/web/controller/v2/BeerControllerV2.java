@@ -43,7 +43,7 @@ public class BeerControllerV2 {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/beerId")
+    @DeleteMapping("/{beerId}")
     public void deleteBeer(@PathVariable("beerId") UUID id){
         this.beerService.deleteBeer(id);
     }

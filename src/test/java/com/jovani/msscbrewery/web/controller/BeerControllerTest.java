@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -27,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BeerController.class)
 class BeerControllerTest {
 
-    @Mock
+    @MockBean
     private BeerService beerService;
 
     @Autowired
@@ -41,7 +42,8 @@ class BeerControllerTest {
     @BeforeEach
     void setUp() {
         this.beerDto = BeerDto.builder()
-                .beerName("beer1")
+                .id(UUID.randomUUID())
+                .beerName("Beer1")
                 .beerStyle("PALE_ALE")
                 .upc(123456789012L)
                 .build();
@@ -52,7 +54,7 @@ class BeerControllerTest {
         when(beerService.getBeerById(any(UUID.class))).thenReturn(beerDto);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beer/" + beerDto.getId().toString()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(beerDto.getId().toString())))
                 .andExpect(jsonPath("$.beerName", is("Beer1")));
     }
@@ -74,8 +76,8 @@ class BeerControllerTest {
     @Test
     void updateBeer() throws Exception {
         String beerDtoJson = this.objectMapper.writeValueAsString(beerDto);
-
-        mockMvc.perform(put("/api/v1/beer/" + beerDto.getId())
+        when(beerService.updateBeer(any())).thenReturn(beerDto);
+        mockMvc.perform(put("/api/v1/beer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerDtoJson))
                 .andExpect(status().isNoContent());
